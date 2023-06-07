@@ -1,7 +1,7 @@
 export const Config = {
   ownerID: '929830815699984475',
   globallyDisabled: false,
-  prefix: '?c'
+  prefix: '?'
 }
 
 export enum Colors {
