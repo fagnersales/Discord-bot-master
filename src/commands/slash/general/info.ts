@@ -48,8 +48,6 @@ export default new SlashClass({
     const user = int.options.getUser("user");
     const member = int.options.getMember("user");
 
-    console.log(choice);
-
     if (choice === "user") {
       let flags = user.flags.toArray();
       let badges = [];
@@ -195,25 +193,23 @@ export default new SlashClass({
                 "\nDiscriminator:" +
                 ` \`\`#${member.user.discriminator}\`\`` +
                 "\nStatus:" +
-                ` ${mode[member.presence?.status ?? "offline"]} ${
-                  status[member.presence?.status ?? "offline"]
+                ` ${mode[member.presence?.status ?? "offline"]} ${status[member.presence?.status ?? "offline"]
                 }` +
                 "\nStreaming:" +
-                `${
-                  member.presence?.activities.filter(
-                    (item) => item.name === "YouTube" || item.name === "Twitch"
-                  ).length > 0
-                    ? member.presence?.activities
-                        .filter(
-                          (item) =>
-                            item.name === "YouTube" || item.name === "Twitch"
-                        )
-                        .map((activity) => {
-                          if (activity.type === ActivityType.Streaming) {
-                            return ` ${Emojis.Check}`;
-                          }
-                        })
-                    : ` ${Emojis.Cross}`
+                `${member.presence?.activities?.filter(
+                  (item) => item.name === "YouTube" || item.name === "Twitch"
+                ).length > 0
+                  ? member.presence?.activities
+                    .filter(
+                      (item) =>
+                        item.name === "YouTube" || item.name === "Twitch"
+                    )
+                    .map((activity) => {
+                      if (activity.type === ActivityType.Streaming) {
+                        return ` ${Emojis.Check}`;
+                      }
+                    })
+                  : ` ${Emojis.Cross}`
                 }` +
                 "\nBot:" +
                 ` ${bot}`,
@@ -226,11 +222,10 @@ export default new SlashClass({
               name: "Presence:",
               value: codeBlock(
                 "fix",
-                `${
-                  member.presence.activities
-                    .filter((item) => item.name != "Custom Status")
-                    .map((activity) => `${activity.name}`)
-                    .join("\n") || "No activities"
+                `${member.presence?.activities
+                  .filter((item) => item.name != "Custom Status")
+                  .map((activity) => `${activity.name}`)
+                  .join("\n") || "No activities"
                 }`
               ),
             },
@@ -259,36 +254,36 @@ export default new SlashClass({
         {
           name: `> ${Emojis.Information} General`,
           value:
-            "\nName:" + 
+            "\nName:" +
             ` ${int.guild.name}` +
-            "\nDescription:" + 
+            "\nDescription:" +
             ` ${int.guild.description ?? 'None'}` +
             "\nOwner:" +
             ` ${int.guild.ownerId === int.member.id
-            ? Emojis.Check
-            : Emojis.Cross}` +
+              ? Emojis.Check
+              : Emojis.Cross}` +
             "" +
-            `` + 
+            `` +
             "" +
-            `` + 
+            `` +
             "" +
-            `` + 
+            `` +
             "" +
-            `` + 
+            `` +
             "" +
             ``,
         },
         {
           name: `> ${Emojis.Information} Stats`,
-          value: 
-          "\nMembers:" +
-          ` ${int.guild.memberCount}` +  //code a way to put a start behind members too show it's eleagble to be partnered with that amount of members
-          "" + 
-          `` + 
-          "" + 
-          `` + 
-          "" + 
-          ``
+          value:
+            "\nMembers:" +
+            ` ${int.guild.memberCount}` +  //code a way to put a start behind members too show it's eleagble to be partnered with that amount of members
+            "" +
+            `` +
+            "" +
+            `` +
+            "" +
+            ``
         },
         {
           name: `> ${Emojis.Information} Channels`,
