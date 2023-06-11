@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-export interface Guild {
+export interface GuildData {
   guildName: string;
   id: string;
   discussion: {
@@ -22,7 +22,7 @@ export interface Guild {
 
 export const Guild = model(
   "Guild",
-  new Schema<Guild>({
+  new Schema<GuildData>({
     guildName: String,
     id: String,
     discussion: {

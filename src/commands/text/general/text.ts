@@ -1,3 +1,4 @@
+import { Message } from "discord.js";
 import { TextClass } from "../../../structures/text.js";
 
 export default new TextClass({
@@ -21,18 +22,17 @@ export default new TextClass({
         let collectorCounter = 0;
         let endCounter = 0;
 
-        const filter = (m) => m.author.id === message.author.id;
+        const filter = (m: Message) => m.author.id === message.author.id;
 
         const appStart = await message.channel.send(questions[collectorCounter++])
-        const channel = appStart.channel;
 
-        const collector = channel.createMessageCollector({
+        const collector = appStart.channel.createMessageCollector({
             filter: filter
         });
 
         collector.on('collect', () => {
             if (collectorCounter < questions.length) {
-                channel.send(questions[collectorCounter++]);
+                appStart.channel.send(questions[collectorCounter++]);
             } else {
                 collector.stop('fulfilled')
             }

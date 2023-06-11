@@ -1,7 +1,6 @@
 import { Message } from "discord.js";
 import { ExtendedClient } from "./client.js";
 
-
 interface CommandOptions {
     data: {
         name: string,
