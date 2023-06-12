@@ -21,7 +21,6 @@ export default new EventClass({
               channel: 'None',
               active: false
             },
-            soundboard: []
         }));
         console.log(chalk.green(`Successfully`) + chalk.white(` Added ${guild.name} too the guilds database!`))
   },

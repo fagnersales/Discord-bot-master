@@ -151,101 +151,123 @@ export default new SlashClass({
         badges.push(Badges.Username);
       }
 
-      if (member) {
-        console.log("User searched was inside the guild");
 
-        let bot;
-        if (member.user.bot) {
-          bot = Emojis.Check;
+      if (member) {
+        if (user.bot) {
+
+          const botEmbed = new EmbedBuilder()
+            .setTitle('Bot Information')
+            .setDescription(`Welcome to ${member.user.username}'s profile`)
+            .addFields([
+              {
+                name: '',
+                value: ''
+              }
+            ])
+
+
+          int.reply({ embeds: [botEmbed], ephemeral: true })
         } else {
-          bot = Emojis.Cross;
+          let bot: Boolean | String;
+          if (member.user.bot) {
+            bot = Emojis.Check;
+          } else {
+            bot = Emojis.Cross;
+          }
+
+          let status = {
+            online: "Online",
+            idle: "Idle",
+            dnd: "Do Not Disturb",
+            offline: "Invisible",
+          };
+
+          let mode = {
+            online: Emojis.Online,
+            idle: Emojis.Idle,
+            dnd: Emojis.Dnd,
+            offline: Emojis.Offline,
+          };
+
+          const memberEmbed = new EmbedBuilder()
+            .setTitle('Member Information')
+            .setDescription(`Welcome to ${member.user.username}'s profile`)
+            .setThumbnail(member.displayAvatarURL({ extension: "png" }))
+            .addFields([
+              {
+                name: "General:",
+                value:
+                  "\nUsername:" +
+                  ` \`\`${member.user.username}\`\`` +
+                  "\nNickname:" +
+                  ` \`\`${member.nickname ?? "None"}\`\`` +
+                  "\nBadges:" +
+                  ` ${badges.join(" ") || " ``None``"}` +
+                  "\nID:" +
+                  ` \`\`${member.id}\`\`` +
+                  "\nDiscriminator:" +
+                  ` \`\`#${member.user.discriminator}\`\`` +
+                  "\nStatus:" +
+                  ` ${mode[member.presence?.status ?? "offline"]} ${status[member.presence?.status ?? "offline"]
+                  }` +
+                  "\nStreaming:" +
+                  `${member.presence?.activities?.filter(
+                    (item) => item.name === "YouTube" || item.name === "Twitch"
+                  ).length > 0
+                    ? member.presence?.activities
+                      .filter(
+                        (item) =>
+                          item.name === "YouTube" || item.name === "Twitch"
+                      )
+                      .map((activity) => {
+                        if (activity.type === ActivityType.Streaming) {
+                          return ` ${Emojis.Check}`;
+                        }
+                      })
+                    : ` ${Emojis.Cross}`
+                  }` +
+                  "\nBot:" +
+                  ` ${bot}`,
+              },
+              {
+                name: "Roles:",
+                value: `ignore`,
+              },
+              {
+                name: "Presence:",
+                value: codeBlock(
+                  "fix",
+                  `${member.presence?.activities
+                    .filter((item) => item.name != "Custom Status")
+                    .map((activity) => `${activity.name}`)
+                    .join("\n") || "No activities"
+                  }`
+                ),
+              },
+            ])
+            .setColor("#2F3136")
+            .setFooter({
+              text: `${member.user.tag} `,
+              iconURL: member.user.avatarURL({ extension: "png" }),
+            })
+            .setTimestamp();
+
+          int.reply({ embeds: [memberEmbed], ephemeral: true });
+
         }
 
-        let status = {
-          online: "Online",
-          idle: "Idle",
-          dnd: "Do Not Disturb",
-          offline: "Invisible",
-        };
-
-        let mode = {
-          online: Emojis.Online,
-          idle: Emojis.Idle,
-          dnd: Emojis.Dnd,
-          offline: Emojis.Offline,
-        };
-
+      } else {
+        // if user isn't a guild member and just a USER
         const embed = new EmbedBuilder()
-          .setTitle(`${member.user.username}'s Profile`)
-          .setThumbnail(member.displayAvatarURL({ extension: "png" }))
-          .addFields([
-            {
-              name: "General:",
-              value:
-                "\nUsername:" +
-                ` \`\`${member.user.username}\`\`` +
-                "\nNickname:" +
-                ` \`\`${member.nickname ?? "None"}\`\`` +
-                "\nBadges:" +
-                ` ${badges.join(" ") || " ``None``"}` +
-                "\nID:" +
-                ` \`\`${member.id}\`\`` +
-                "\nDiscriminator:" +
-                ` \`\`#${member.user.discriminator}\`\`` +
-                "\nStatus:" +
-                ` ${mode[member.presence?.status ?? "offline"]} ${status[member.presence?.status ?? "offline"]
-                }` +
-                "\nStreaming:" +
-                `${member.presence?.activities?.filter(
-                  (item) => item.name === "YouTube" || item.name === "Twitch"
-                ).length > 0
-                  ? member.presence?.activities
-                    .filter(
-                      (item) =>
-                        item.name === "YouTube" || item.name === "Twitch"
-                    )
-                    .map((activity) => {
-                      if (activity.type === ActivityType.Streaming) {
-                        return ` ${Emojis.Check}`;
-                      }
-                    })
-                  : ` ${Emojis.Cross}`
-                }` +
-                "\nBot:" +
-                ` ${bot}`,
-            },
-            {
-              name: "Roles:",
-              value: `ignore`,
-            },
-            {
-              name: "Presence:",
-              value: codeBlock(
-                "fix",
-                `${member.presence?.activities
-                  .filter((item) => item.name != "Custom Status")
-                  .map((activity) => `${activity.name}`)
-                  .join("\n") || "No activities"
-                }`
-              ),
-            },
-          ])
-          .setColor("#2F3136")
-          .setFooter({
-            text: `${member.user.tag} `,
-            iconURL: member.user.avatarURL({ extension: "png" }),
-          })
-          .setTimestamp();
+          .setTitle('User Information')
+          .setDescription(`Welcome to ${user.username}'s profile`)
+          .setFields([{
+            name: "General",
+            value: "\nBadges:" +
+              `${badges.join(" ") || " ``None``"}`
+          }]);
 
         int.reply({ embeds: [embed], ephemeral: true });
-      } else {
-        // other embed
-        const embed = new EmbedBuilder()
-          .setTitle(`${user.username}'s Profile`)
-          .setDescription("Badges: " + `${badges.join(" ") || " ``None``"}`);
-        console.log("User searched was not inside the guild");
-
-        int.reply({ embeds: [embed] });
       }
     }
 

@@ -44,7 +44,6 @@ export default new SlashClass({
         ],
         ephemeral: true,
       });
-
     const modal = new ModalBuilder({
       customId: "afk_modal",
       title: "AFK Reason",

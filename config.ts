@@ -13,6 +13,13 @@ export enum Colors {
   Information = "#00C599"
 }
 
+// maybe gonna use this for /info command
+export enum EmbedTypeColors {
+  Member = "",
+  User = "",
+  Guild = ""
+}
+
 export enum Emojis {
   Check = "<:Check:1107897716157206568>",
   Cross = "<:Cross:1109896323425120367>",
