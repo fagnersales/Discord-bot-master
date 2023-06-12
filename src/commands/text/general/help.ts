@@ -51,7 +51,7 @@ export default new TextClass({
 
       const embed = new EmbedBuilder().setDescription(
         "Please choose a category in the select menu"
-      );
+      ).setFooter({ text: 'Use ?help {cmd} to search for only one'})
 
       const components = (state: boolean) => [
         new ActionRowBuilder<StringSelectMenuBuilder>().addComponents([

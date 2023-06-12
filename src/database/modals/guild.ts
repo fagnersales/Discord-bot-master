@@ -12,12 +12,6 @@ export interface GuildData {
     channel: string;
     active: boolean;
   };
-  soundboard: [
-    {
-      name: string;
-      url: string;
-    }
-  ];
 }
 
 export const Guild = model(
@@ -39,12 +33,6 @@ export const Guild = model(
         type: Boolean,
         default: "false",
       },
-    },
-    soundboard: [
-      {
-        name: String,
-        url: String,
-      },
-    ],
+    }
   })
 );
