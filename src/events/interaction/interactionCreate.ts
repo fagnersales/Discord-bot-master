@@ -218,7 +218,7 @@ export default new EventClass({
     }
 
     if (interaction.isChannelSelectMenu()) {
-      if (interaction.customId === "channel") {
+      if (interaction.customId === "chatbotchannel") {
         let channel = "";
         interaction.values.forEach((value) => {
           channel += `${value}`;

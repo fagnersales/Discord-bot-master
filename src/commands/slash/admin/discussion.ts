@@ -57,7 +57,7 @@ export default new SlashClass({
         const menu =
           new ActionRowBuilder<ChannelSelectMenuBuilder>().addComponents([
             new ChannelSelectMenuBuilder()
-              .setCustomId("channel")
+              .setCustomId("chatbotchannel")
               .setPlaceholder("Please select a channel")
               .setChannelTypes([ChannelType.GuildText])
               .setMinValues(1)

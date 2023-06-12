@@ -12,6 +12,13 @@ export interface GuildData {
     channel: string;
     active: boolean;
   };
+  applications: [
+    app: {
+      name: string, // the channel name
+      channel: string,
+      questions: [];
+    }
+  ]
 }
 
 export const Guild = model(
@@ -31,8 +38,21 @@ export const Guild = model(
       channel: String,
       active: {
         type: Boolean,
-        default: "false",
+        default: false,
       },
-    }
+    },
+    applications: [
+      {
+        name: { 
+          type: String,
+          default: "None"
+        },
+        channel: {
+          type: String,
+          default: "None"
+        },
+        questions: []
+      }
+    ]
   })
 );
