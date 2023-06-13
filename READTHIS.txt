@@ -1,0 +1,226 @@
+
+THIS IS THE OLD APP COMMAND NEEDS FIXING
+
+
+
+
+
+
+
+
+
+import {
+    ActionRowBuilder,
+    ApplicationCommandOptionType,
+    ApplicationCommandType,
+    ButtonBuilder,
+    ButtonStyle,
+    ChannelSelectMenuBuilder,
+    ChannelType,
+    ChatInputCommandInteraction,
+    ComponentType,
+    EmbedBuilder,
+    ModalBuilder,
+    TextInputBuilder,
+    TextInputStyle
+} from "discord.js";
+import { SlashClass } from "../../../structures/slash.js";
+import { Guild } from "../../../database/modals/guild.js";
+
+export default new SlashClass({
+    data: {
+        name: "application",
+        description: "A system to have people apply for stuff in you're server",
+        type: ApplicationCommandType.ChatInput,
+        options: [{
+            name: "setup",
+            description: "upload custom questions to ask",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [{
+                name: 'name',
+                type: ApplicationCommandOptionType.String,
+                description: 'Select a name for this application',
+                required: true
+            }]
+        },
+        {
+            name: "apply",
+            description: "Set a channel to send response too",
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+                {
+                    name: "application",
+                    description: "The application too apply for",
+                    type: ApplicationCommandOptionType.String,
+                    required: true,
+                    autocomplete: true
+
+                },
+            ],
+        },
+        {
+            name: "remove",
+            description: "Remove a application from being used anymore",
+            type: ApplicationCommandOptionType.String
+        }
+        ]
+    },
+    opt: {
+        userPermissions: ['Administrator'], // check over what permissions should be needed later
+        botPermissions: ['ManageGuild'], // check over what permissions should be needed later
+        category: "admin",
+        cooldown: 3,
+        visible: true,
+        guildOnly: true,
+    },
+
+    // @ts-ignore
+    auto: async (int) => {
+        // const focused = int.options.getFocused() 
+
+    },
+    // @ts-ignore
+    execute: async (client, int: ChatInputCommandInteraction<'cached'>) => {
+        // const application = int.options.getString('application')
+        const name = int.options.getString('name');
+
+        switch (int.options.getSubcommand()) {
+            case 'setup':
+
+                const setupEmbed = new EmbedBuilder()
+                    .setTitle('Setup Embed')
+                    .setDescription('Use this menu and buttons to setup stuff for your application system')
+                    .addFields([{
+                        name: "Information",
+                        value: `Info here`
+                    }])
+
+                const beginButton = new ButtonBuilder()
+                    .setCustomId('begin')
+                    .setLabel('Begin Setup')
+                    .setStyle(ButtonStyle.Success)
+
+                const buttonRow = new ActionRowBuilder<ButtonBuilder>()
+                    .addComponents(beginButton);
+
+                const reply = await int.reply({ embeds: [setupEmbed], components: [buttonRow] })
+
+                const buttonMenu = await reply.awaitMessageComponent({ filter: i => i.user.id === int.user.id, componentType: ComponentType.Button })
+                if (buttonMenu.member.id !== int.member.id) {
+                    int.reply({ content: "This interaction is not for you", ephemeral: true })
+                }
+
+                if (buttonMenu.customId === 'begin') {
+
+                    // --------------------------------------------------
+                    const firstUpdate = new EmbedBuilder()
+                        .setTitle('Channel Selection')
+                        .setDescription("Pick a channel to set for the application system")
+
+                    const channelSelect = new ChannelSelectMenuBuilder()
+                        .setCustomId('channel')
+                        .setPlaceholder('Select a channel')
+                        .setChannelTypes(ChannelType.GuildText)
+                        .setMaxValues(1)
+                        .setMinValues(1)
+
+                    const row1 = new ActionRowBuilder<ChannelSelectMenuBuilder>()
+                        .addComponents(channelSelect)
+
+                    const channelMenu = await buttonMenu.update({ components: [row1], embeds: [firstUpdate] });
+
+                    const data = await channelMenu.awaitMessageComponent({ filter: i => i.user.id === int.user.id, componentType: ComponentType.ChannelSelect });
+
+                    const channel = data.values[0];
+
+                    // ----------------------------------------------------------------------------------
+                    // NEED TO CHECK IF A APPLICATION WITH THE SAME NAME ALREADY EXISTS INSIDE DATABASE
+                    // NEED TO CHECK IF THE SYSTEM WAS ALREADY SETUP AND PROMPT IF THEY WANNA DELETE IT TOTALLY
+                    // ----------------------------------------------------------------------------------
+
+                    await Guild.findOneAndUpdate(
+                        { id: int.guild.id, guildName: int.guild.name },
+                        { $push: { applications: { name: name, channel: channel } } })
+                        .then(async (doc) => await doc.save())
+
+
+                    // --------------------------------------------------
+
+                    const secondUpdate = new EmbedBuilder()
+                        .setTitle('Questions Setup')
+                        .setDescription("Select the button that you need to do")
+
+                    const add = new ButtonBuilder()
+                        .setCustomId('add-question')
+                        .setLabel('Add')
+                        .setStyle(ButtonStyle.Success);
+
+                    const remove = new ButtonBuilder()
+                        .setCustomId('remove-question')
+                        .setLabel('Remove')
+                        .setStyle(ButtonStyle.Danger);
+
+                    const finished = new ButtonBuilder()
+                        .setCustomId('finished-questions')
+                        .setLabel('Finished')
+                        .setStyle(ButtonStyle.Secondary);
+
+                    const row2 = new ActionRowBuilder<ButtonBuilder>()
+                        .addComponents(add, remove, finished)
+
+                    const embedButtonMenu = await data.update({ components: [row2], embeds: [secondUpdate] })
+                    
+                    // this is for adding the questions into the object
+                    // await Guild.findOneAndUpdate(
+                    //     { id: int.guild.id, guildName: int.guild.name },
+                    //     { applications: { questions: ["question here maybe make a for loop or something to do it for EACH one"] } }
+                    // ).then(async (doc) => await doc.save())
+
+                    const questionMenu = await embedButtonMenu.awaitMessageComponent({ filter: i => i.user.id === int.user.id, componentType: ComponentType.Button })
+                    if (questionMenu.member.id !== int.member.id) {
+                        int.reply({ content: "This interaction is not for you", ephemeral: true })
+                    }
+
+                    if (questionMenu.customId === 'add-question') {
+
+                        const modal = new ModalBuilder()
+                            .setCustomId('myModal')
+                            .setTitle('My Modal');
+
+
+                        const questioninput = new TextInputBuilder()
+                            .setCustomId('favoriteColorInput')
+                            .setLabel("What's your favorite color?")
+                            .setStyle(TextInputStyle.Short);
+
+                        modal.addComponents(new ActionRowBuilder<TextInputBuilder>().addComponents(questioninput));
+                        await int.showModal(modal)
+
+                    } else if (questionMenu.customId === 'remove-question') {
+
+                    }
+                    // make another embed update with different buttons to have a button open a modal and then in interaction event make it 
+                    // upload the question into the question array and then make button clickable again to add more if wanted (aka open modal again)
+
+                //---------------------------------------------------------------------------------------
+
+                    // either reply to the component interactions (buttonMenu and questionMenu) as usual in the same way you do data
+                    // or maybe declare a non-constant variable as something other than ChatInputCommandInteraction for storing these interactions and replying to them as you go?
+                    // this is more of a logic issue and is leaving the scope of this channel
+
+                }
+
+                break;
+
+
+            case 'apply':
+                break;
+
+
+            case 'remove':
+                break;
+        }
+
+
+    },
+});
