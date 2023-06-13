@@ -9,7 +9,11 @@ import {
     ChatInputCommandInteraction,
     ComponentType,
     EmbedBuilder,
+    ModalBuilder,
+    TextInputBuilder,
+    TextInputStyle,
 } from "discord.js";
+
 import { SlashClass } from "../../../structures/slash.js";
 import { Guild } from "../../../database/modals/guild.js";
 
@@ -22,6 +26,12 @@ export default new SlashClass({
             name: "setup",
             description: "upload custom questions to ask",
             type: ApplicationCommandOptionType.Subcommand,
+            options: [{
+                name: 'name',
+                type: ApplicationCommandOptionType.String,
+                description: 'Select a name for this application',
+                required: true
+            }]
         },
         {
             name: "apply",
@@ -38,6 +48,11 @@ export default new SlashClass({
                 },
             ],
         },
+        {
+            name: "remove",
+            description: "Remove a application from being used anymore",
+            type: ApplicationCommandOptionType.Subcommand
+        }
         ]
     },
     opt: {
@@ -56,82 +71,140 @@ export default new SlashClass({
     },
     // @ts-ignore
     execute: async (client, int: ChatInputCommandInteraction<'cached'>) => {
-        // const application = int.options.getString('application')
+        // @ts-ignore
+        const application = int.options.getString('application');
+        // @ts-ignore
+        const name = int.options.getString('name');
+
+
 
         switch (int.options.getSubcommand()) {
             case 'setup':
-                const setupEmbed = new EmbedBuilder()
-                    .setTitle('Setup Embed')
-                    .setDescription('Use this menu and buttons to setup stuff for your application system')
-                    .addFields([{
-                        name: "Information",
-                        value: `Info here`
-                    }])
 
-                const beginButton = new ButtonBuilder()
-                    .setCustomId('begin')
+                const SetupEmbed = new EmbedBuilder()
+                    .setTitle("Application Setup")
+                    .setDescription("This is the setup for a application system so users can apply\nfor staff or other things in your server.")
+                    .setFooter({ text: `Run by: ${int.user.username}` })
+                    .setTimestamp()
+
+                const SetupButton = new ButtonBuilder()
+                    .setCustomId('beginSetup')
                     .setLabel('Begin Setup')
                     .setStyle(ButtonStyle.Success)
 
-                const buttonRow = new ActionRowBuilder<ButtonBuilder>()
-                    .addComponents(beginButton);
+                const respond = await int.reply({ embeds: [SetupEmbed], components: [new ActionRowBuilder<ButtonBuilder>().addComponents(SetupButton)] })
 
-                const reply = await int.reply({ embeds: [setupEmbed], components: [buttonRow] })
+                const collector = respond.createMessageComponentCollector({ componentType: ComponentType.Button })
 
-                const button = await reply.awaitMessageComponent({ filter: i => i.user.id === int.user.id, componentType: ComponentType.Button })
-                if (button.member.id !== int.member.id) {
-                    int.reply({ content: "This interaction is not for you" })
-                }
+                collector.on('collect', async (button) => {
+                    if (button.member.id !== int.member.id) {
+                        await button.reply({ content: 'This button is not for you', ephemeral: true })
+                    } else {
+                        if (button.customId === 'beginSetup') {
+                            const ChannelEmbed = new EmbedBuilder()
+                                .setTitle('Channel Selection')
+                                .setDescription("Pick a channel to set for the application system")
 
-                if (button.customId === 'begin') {
-                    const firstUpdate = new EmbedBuilder()
-                    .setTitle('Channel Selection')
-                    .setDescription("Pick a channel to set for the application system")
+                            const SelectChannel = new ChannelSelectMenuBuilder()
+                                .setCustomId('channel')
+                                .setPlaceholder('Select a channel')
+                                .setChannelTypes(ChannelType.GuildText)
+                                .setMaxValues(1)
+                                .setMinValues(1)
 
-                    const channelSelect = new ChannelSelectMenuBuilder()
-                    .setCustomId('channel')
-                    .setPlaceholder('Select a channel')
-                    .setChannelTypes(ChannelType.GuildText)
-                    .setMaxValues(1)
-                    .setMinValues(1)
+                            const data = await button.update({ embeds: [ChannelEmbed], components: [new ActionRowBuilder<ChannelSelectMenuBuilder>().addComponents(SelectChannel)] })
+                            const Menu = await data.awaitMessageComponent({ filter: i => i.user.id === int.user.id, componentType: ComponentType.ChannelSelect })
 
-                    const row = new ActionRowBuilder<ChannelSelectMenuBuilder>()
-                    .addComponents(channelSelect)
+                            const channel = Menu.values[0];
 
-                    const menu = await button.update({ components: [row], embeds: [firstUpdate] });
+                            //-----------------------------------------------------
+                            await Guild.findOneAndUpdate(
+                                { id: int.guild.id, guildName: int.guild.name },
+                                { $push: { applications: { name: name, channel: channel } } })
+                                .then(async (doc) => await doc.save())
+                            //-----------------------------------------------------
 
-                   const data = await menu.awaitMessageComponent({ filter: i => i.user.id === int.user.id, componentType: ComponentType.ChannelSelect });
 
-                    //@ts-ignore
-                   const channel = data.values[0];
+                            const QuestionEmbed = new EmbedBuilder()
+                                .setTitle('Questions Setup')
+                                .setDescription("Select the button that you need to do")
 
-                   const doc = await Guild.findOneAndUpdate(
-                        { id: int.guild.id, guildName: int.guild.name },
-                        { applications: { channel: `${channel}`}} // and set it in here
-                        )
+                            const AddButton = new ButtonBuilder()
+                                .setCustomId('add-question')
+                                .setLabel('Add')
+                                .setStyle(ButtonStyle.Success);
 
-                        doc.save();
+                            const RemoveButton = new ButtonBuilder()
+                                .setCustomId('remove-question')
+                                .setLabel('Remove')
+                                .setStyle(ButtonStyle.Danger);
 
-                        // make a way to get a name for the "Application" to set into database either with modal or something else
+                            const FinishedButton = new ButtonBuilder()
+                                .setCustomId('finished-questions')
+                                .setLabel('Finished')
+                                .setStyle(ButtonStyle.Secondary);
 
-                }
+
+                            const ButtonSelectMenu = await Menu.update({ embeds: [QuestionEmbed], components: [new ActionRowBuilder<ButtonBuilder>().addComponents(AddButton, RemoveButton, FinishedButton)] })
+
+                            const MenuCollector = ButtonSelectMenu.createMessageComponentCollector({ componentType: ComponentType.Button })
+
+                            MenuCollector.on('collect', async (button) => {
+                                if (button.member.id !== int.member.id) {
+                                    await button.reply({ content: 'This button is not for you', ephemeral: true })
+                                } else {
+                                    if (button.customId === 'add-question') {
+
+                                        const modal = new ModalBuilder()
+                                            .setCustomId('questions-modal')
+                                            .setTitle('My Modal');
+
+
+                                        const questioninput = new TextInputBuilder()
+                                            .setCustomId('question-response')
+                                            .setLabel("What question do you wanna add")
+                                            .setStyle(TextInputStyle.Short);
+
+                                        modal.addComponents(new ActionRowBuilder<TextInputBuilder>().addComponents(questioninput));
+
+
+                                        button.showModal(modal)
+
+                                    } else if (button.customId === 'finished-questions') {
+                                        MenuCollector.stop()
+                                    }
+                                    
+
+                                }
+                            })
+
+
+
+
+
+                        }
+                        collector.stop('correct user clicked')
+                    }
+
+                })
+
+
+
+
+
 
                 break;
-
-
-
-
-
-
 
             case 'apply':
-                console.log('apply')
-                break;
+
+                break
+
+            case 'remove':
+
+                break
 
             default:
                 break;
         }
-
-
     },
 });

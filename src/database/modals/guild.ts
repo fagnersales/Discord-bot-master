@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, model, SchemaTypes } from "mongoose";
 
 export interface GuildData {
   guildName: string;
@@ -13,10 +13,10 @@ export interface GuildData {
     active: boolean;
   };
   applications: [
-    app: {
+    {
       name: string, // the channel name
       channel: string,
-      questions: [];
+      questions?: [];
     }
   ]
 }
@@ -24,34 +24,34 @@ export interface GuildData {
 export const Guild = model(
   "Guild",
   new Schema<GuildData>({
-    guildName: String,
-    id: String,
+    guildName: SchemaTypes.String,
+    id: SchemaTypes.String,
     discussion: {
       channel: {
-        type: String,
+        type: SchemaTypes.String,
         default: "None",
       },
-      set: Boolean,
+      set: SchemaTypes.Boolean,
     },
     logging: {
-      name: String,
-      channel: String,
+      name: SchemaTypes.String,
+      channel: SchemaTypes.String,
       active: {
-        type: Boolean,
+        type: SchemaTypes.Boolean,
         default: false,
       },
     },
     applications: [
       {
         name: { 
-          type: String,
+          type: SchemaTypes.String,
           default: "None"
         },
         channel: {
-          type: String,
+          type: SchemaTypes.String,
           default: "None"
         },
-        questions: []
+        questions: SchemaTypes.Array
       }
     ]
   })

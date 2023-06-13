@@ -49,19 +49,18 @@ export default new EventClass({
               command.opt?.userPermissions
             )
               ? missingPerms(
-                  interaction.member.permissionsIn(interaction.channel),
-                  command.opt?.userPermissions
-                )
+                interaction.member.permissionsIn(interaction.channel),
+                command.opt?.userPermissions
+              )
               : missingPerms(
-                  interaction.memberPermissions,
-                  command.opt?.userPermissions
-                );
+                interaction.memberPermissions,
+                command.opt?.userPermissions
+              );
 
             if (missingUserPerms?.length) {
               return interaction.reply({
-                content: `You need the following permission${
-                  missingUserPerms.length > 1 ? "s" : ""
-                }: ${missingUserPerms.map((x) => inlineCode(x)).join(", ")}`,
+                content: `You need the following permission${missingUserPerms.length > 1 ? "s" : ""
+                  }: ${missingUserPerms.map((x) => inlineCode(x)).join(", ")}`,
                 ephemeral: true,
               });
             }
@@ -73,21 +72,20 @@ export default new EventClass({
               command.opt?.botPermissions
             )
               ? missingPerms(
-                  interaction.guild.members.me.permissionsIn(
-                    interaction.channel
-                  ),
-                  command.opt?.botPermissions
-                )
+                interaction.guild.members.me.permissionsIn(
+                  interaction.channel
+                ),
+                command.opt?.botPermissions
+              )
               : missingPerms(
-                  interaction.guild.members.me.permissions,
-                  command.opt?.botPermissions
-                );
+                interaction.guild.members.me.permissions,
+                command.opt?.botPermissions
+              );
 
             if (missingBotPerms?.length) {
               return interaction.reply({
-                content: `I need the following permission${
-                  missingBotPerms.length > 1 ? "s" : ""
-                }: ${missingBotPerms.map((x) => inlineCode(x)).join(", ")}`,
+                content: `I need the following permission${missingBotPerms.length > 1 ? "s" : ""
+                  }: ${missingBotPerms.map((x) => inlineCode(x)).join(", ")}`,
                 ephemeral: true,
               });
             }
@@ -182,39 +180,56 @@ export default new EventClass({
     }
 
     if (interaction.isModalSubmit()) {
-      const reason = interaction.fields.getTextInputValue("afk_reason");
+      if (interaction.customId === 'afk_modal') {
+        const reason = interaction.fields.getTextInputValue("afk_reason");
 
-      (await AFK.findOneAndUpdate(
-        { id: interaction.user.id },
-        { afk: true, time: Date.now(), reason }
-      )) ||
-        (await AFK.create({
-          id: interaction.user.id,
-          afk: true,
-          time: Date.now(),
-          reason,
-          guild: interaction.guild.id,
-          mentions: 0,
-        }));
+        (await AFK.findOneAndUpdate(
+          { id: interaction.user.id },
+          { afk: true, time: Date.now(), reason }
+        )) ||
+          (await AFK.create({
+            id: interaction.user.id,
+            afk: true,
+            time: Date.now(),
+            reason,
+            guild: interaction.guild.id,
+            mentions: 0,
+          }));
 
-      interaction.reply({
-        ephemeral: true,
-        embeds: [
-          new EmbedBuilder()
-            .addFields([
-              {
-                name: `> ${Emojis.Check} AFK Status Set`,
-                value: `**Details:** 
+        interaction.reply({
+          ephemeral: true,
+          embeds: [
+            new EmbedBuilder()
+              .addFields([
+                {
+                  name: `> ${Emojis.Check} AFK Status Set`,
+                  value: `**Details:** 
               ${Emojis.Blank} Reason: ${reason}
               ${Emojis.Blank} Time: <t:${Math.floor(
-                  interaction.createdTimestamp / 1000
-                )}:t>
+                    interaction.createdTimestamp / 1000
+                  )}:t>
               `,
-              },
-            ])
-            .setColor(Colors.Success),
-        ],
-      });
+                },
+              ])
+              .setColor(Colors.Success),
+          ],
+        });
+
+      }
+
+      if (interaction.customId === 'questions-modal') {
+        // const question = interaction.fields.getTextInputValue('question-response')
+        // await Guild.findOneAndUpdate(
+        //       { id: interaction.guild.id, guildName: interaction.guild.name },
+        //       { $push: { applications: { questions: `${question}` } } }
+        //   ).then((doc) => doc.save())
+
+        // FIX THIS CODE SO IT ONLY PUTS EACH NEW QUESTION IN ARRAY AND DOESN'T CREATE ANOTHER OBJECT
+
+
+
+        interaction.reply({ content: 'Question has been added!', ephemeral: true })
+      }
     }
 
     if (interaction.isChannelSelectMenu()) {
