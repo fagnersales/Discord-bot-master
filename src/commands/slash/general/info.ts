@@ -6,7 +6,7 @@ import {
   codeBlock,
 } from "discord.js";
 import { SlashClass } from "../../../structures/slash.js";
-import { Badges, Colors, Emojis } from "../../../../config.js";
+import { Badges, Colors, Config, CustomBadges, Emojis, Roles } from "../../../../config.js";
 
 export default new SlashClass({
   data: {
@@ -152,6 +152,39 @@ export default new SlashClass({
       }
 
 
+      const identificationBadges = []
+
+      const roledata = [
+        Roles.OwnerID,
+        Roles.DeveloperID
+      ]
+
+      for (const roles of roledata) {
+
+        const guild = client.guilds.cache.get(Config.server);
+        const guildMember = guild.members.cache.get(member.id);
+
+        if (guildMember) {
+          const role = guildMember.roles.cache.get(roles)
+          console.log(role)
+
+          switch (role?.name) {
+            case 'Owner':
+              identificationBadges.push(CustomBadges.Owner)
+              break;
+
+            case 'Developer':
+              identificationBadges.push(CustomBadges.Developer)
+              break;
+          }
+
+        } else {
+          console.error('Had a problem getting the user')
+        }
+
+      }
+
+
       if (member) {
         if (user.bot) {
 
@@ -160,14 +193,16 @@ export default new SlashClass({
             .setDescription(`Welcome to ${member.user.username}'s profile`)
             .addFields([
               {
-                name: '',
-                value: ''
+                name: 'not setup yet',
+                value: 'not setup yet'
               }
             ])
 
 
           int.reply({ embeds: [botEmbed], ephemeral: true })
+
         } else {
+
           let bot: Boolean | String;
           if (member.user.bot) {
             bot = Emojis.Check;
@@ -188,6 +223,8 @@ export default new SlashClass({
             dnd: Emojis.Dnd,
             offline: Emojis.Offline,
           };
+
+
 
           const memberEmbed = new EmbedBuilder()
             .setTitle('Member Information')
@@ -211,7 +248,7 @@ export default new SlashClass({
                   ` ${mode[member.presence?.status ?? "offline"]} ${status[member.presence?.status ?? "offline"]
                   }` +
                   "\nStreaming:" +
-                  `${member.presence?.activities?.filter(
+                  ` ${member.presence?.activities?.filter(
                     (item) => item.name === "YouTube" || item.name === "Twitch"
                   ).length > 0
                     ? member.presence?.activities
@@ -230,16 +267,21 @@ export default new SlashClass({
                   ` ${bot}`,
               },
               {
+                name: "Cubed Data",
+                value: "\nidentification:" +
+                  `${identificationBadges.join(" ") || " ``None``"}`,
+              },
+              {
                 name: "Roles:",
                 value: `ignore`,
               },
               {
                 name: "Presence:",
                 value: codeBlock(
-                  "fix",
+                  "ini",
                   `${member.presence?.activities
                     .filter((item) => item.name != "Custom Status")
-                    .map((activity) => `${activity.name}`)
+                    .map((activity) => `[${activity.name}]`)
                     .join("\n") || "No activities"
                   }`
                 ),

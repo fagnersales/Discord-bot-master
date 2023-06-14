@@ -218,11 +218,16 @@ export default new EventClass({
       }
 
       if (interaction.customId === 'questions-modal') {
-        // const question = interaction.fields.getTextInputValue('question-response')
+        const question = interaction.fields.getTextInputValue('question-response')
         // await Guild.findOneAndUpdate(
         //       { id: interaction.guild.id, guildName: interaction.guild.name },
         //       { $push: { applications: { questions: `${question}` } } }
         //   ).then((doc) => doc.save())
+
+        await Guild.updateOne(
+          { id: interaction.guild.id, guildName: interaction.guild.name }, 
+          { $push: { "applications.questions.$": question }}
+          )
 
         // FIX THIS CODE SO IT ONLY PUTS EACH NEW QUESTION IN ARRAY AND DOESN'T CREATE ANOTHER OBJECT
 

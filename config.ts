@@ -1,7 +1,8 @@
 export const Config = {
   ownerID: '929830815699984475',
   globallyDisabled: false,
-  prefix: '?'
+  prefix: '?',
+  server: '1118711279444561960'
 }
 
 export enum Colors {
@@ -13,11 +14,9 @@ export enum Colors {
   Information = "#00C599"
 }
 
-// maybe gonna use this for /info command
-export enum EmbedTypeColors {
-  Member = "",
-  User = "",
-  Guild = ""
+export enum Roles {
+  OwnerID = "1118711876054945893",
+  DeveloperID = "1118711654604091522"
 }
 
 export enum Emojis {
@@ -53,3 +52,7 @@ export enum Badges {
   VerifiedBot = " <:VerifiedBot1:1113272553503473857><:VerifiedBot2:1113272551834124338>"
 }
 
+export enum CustomBadges {
+  Owner = "<:Owner:1118733931475390617>",
+  Developer = "<:Developer:1118733929294331934>"
+}
