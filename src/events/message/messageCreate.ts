@@ -5,6 +5,7 @@ import { EmbedBuilder } from "discord.js";
 import { Colors, Emojis } from "../../../config.js";
 // import { Guild } from "../../database/modals/guild.js";
 import { Config } from "../../../config.js";
+import { Guild } from "../../database/modals/guild.js";
 // import axios from "axios";
 
 export default new EventClass({
@@ -82,7 +83,12 @@ export default new EventClass({
 
 
     // message commands execution code
-    if (!message.content.startsWith(Config.prefix)) return;
+
+      const guild = await Guild.findOne({ guildName: message.guild.name, id: message.guild.id })
+
+      const prefix = guild.prefix;
+
+    if (!message.content.startsWith(prefix)) return;
     if (Config.globallyDisabled === true) {
      return message.reply({
         content:
@@ -90,10 +96,10 @@ export default new EventClass({
         flags: "SuppressNotifications",
       });
     } else {
-      if (!message.content.startsWith(Config.prefix)) return;
+      if (!message.content.startsWith(prefix)) return;
 
       const args = message.content
-        .slice(Config.prefix.length)
+        .slice(prefix.length)
         .trim()
         .split(/ +/g);
 

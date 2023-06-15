@@ -2,6 +2,7 @@ import { EventClass } from "../../structures/event.js";
 import { Guild } from "../../database/modals/guild.js";
 import chalk from 'chalk';
 import "dotenv/config";
+import { Config } from "../../../config.js";
 
 export default new EventClass({
   name: "guildCreate",
@@ -12,6 +13,7 @@ export default new EventClass({
     (await Guild.create({
             guildName: guild.name,
             id: guild.id,
+            prefix: Config.prefix,
             discussion: {
               channel: 'None',
               set: false

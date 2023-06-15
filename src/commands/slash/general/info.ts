@@ -7,6 +7,7 @@ import {
 } from "discord.js";
 import { SlashClass } from "../../../structures/slash.js";
 import { Badges, Colors, Config, CustomBadges, Emojis, Roles } from "../../../../config.js";
+import { Guild } from "../../../database/modals/guild.js";
 
 export default new SlashClass({
   data: {
@@ -225,6 +226,9 @@ export default new SlashClass({
           };
 
 
+          const guild = await Guild.findOne({ guildName: int.guild.name, id: int.guild.id })
+          const { prefix } = guild;
+
 
           const memberEmbed = new EmbedBuilder()
             .setTitle('Member Information')
@@ -269,7 +273,9 @@ export default new SlashClass({
               {
                 name: "Cubed Data",
                 value: "\nidentification:" +
-                  `${identificationBadges.join(" ") || " ``None``"}`,
+                  `${identificationBadges.join(" ") || " ``None``"}` + 
+                  "\nPrefix:" + 
+                  ` \`\`${prefix}\`\` will prob remove`,
               },
               {
                 name: "Roles:",

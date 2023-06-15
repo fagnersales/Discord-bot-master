@@ -3,6 +3,7 @@ import { Schema, model, SchemaTypes } from "mongoose";
 export interface GuildData {
   guildName: string;
   id: string;
+  prefix: string;
   discussion: {
     channel: string;
     set: boolean;
@@ -26,6 +27,7 @@ export const Guild = model(
   new Schema<GuildData>({
     guildName: SchemaTypes.String,
     id: SchemaTypes.String,
+    prefix: SchemaTypes.String,
     discussion: {
       channel: {
         type: SchemaTypes.String,
