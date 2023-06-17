@@ -6,7 +6,7 @@ import {
   codeBlock,
 } from "discord.js";
 import { SlashClass } from "../../../structures/slash.js";
-import { Badges, Colors, Config, CustomBadges, Emojis, Roles } from "../../../../config.js";
+import { Badges, Colors, Emojis } from "../../../../config.js";
 import { Guild } from "../../../database/modals/guild.js";
 
 export default new SlashClass({
@@ -106,7 +106,7 @@ export default new SlashClass({
 
       if (data.public_flags_array) {
         await Promise.all(
-          data.public_flags_array.map(async (badge) => {
+          data.public_flags_array.map(async (badge: String) => {
             if (badge === "NITRO") badges.push(Badges.Nitro);
           })
         );
@@ -153,37 +153,22 @@ export default new SlashClass({
       }
 
 
-      const identificationBadges = []
+      // const customBadges = []
 
-      const roledata = [
-        Roles.OwnerID,
-        Roles.DeveloperID
-      ]
+      // const roledata = [
+      //   Roles.OwnerID,
+      //   Roles.DeveloperID
+      // ]
 
-      for (const roles of roledata) {
+      //   const guild = client.guilds.cache.get(Config.server);
 
-        const guild = client.guilds.cache.get(Config.server);
-        const guildMember = guild.members.cache.get(member.id);
-
-        if (guildMember) {
-          const role = guildMember.roles.cache.get(roles)
-          console.log(role)
-
-          switch (role?.name) {
-            case 'Owner':
-              identificationBadges.push(CustomBadges.Owner)
-              break;
-
-            case 'Developer':
-              identificationBadges.push(CustomBadges.Developer)
-              break;
-          }
-
-        } else {
-          console.error('Had a problem getting the user')
-        }
-
-      }
+      //   for (const roles of roledata) {
+      //     const role = guild.members.cache.get(member.id).roles.cache.get(roles);
+      //     if (role?.name === undefined) return;
+      //     customBadges.push(role?.name)
+      //   }
+        
+        
 
 
       if (member) {
@@ -246,8 +231,6 @@ export default new SlashClass({
                   ` ${badges.join(" ") || " ``None``"}` +
                   "\nID:" +
                   ` \`\`${member.id}\`\`` +
-                  "\nDiscriminator:" +
-                  ` \`\`#${member.user.discriminator}\`\`` +
                   "\nStatus:" +
                   ` ${mode[member.presence?.status ?? "offline"]} ${status[member.presence?.status ?? "offline"]
                   }` +
@@ -273,8 +256,20 @@ export default new SlashClass({
               {
                 name: "Cubed Data",
                 value: "\nidentification:" +
-                  `${identificationBadges.join(" ") || " ``None``"}` + 
-                  "\nPrefix:" + 
+                  // `${customBadges.map((i) => {
+                  //   console.log('LOG:', i)
+                  //   switch (i?.name) {
+                  //     case 'Owner': {
+                  //       return CustomBadges.Owner;
+                  //     }
+
+                  //     case 'Developer': {
+                  //       return CustomBadges.Developer
+                  //     }
+
+                  //   }
+                  // }).join(' ') ?? 'None'}` +
+                  "\nPrefix:" +
                   ` \`\`${prefix}\`\` will prob remove`,
               },
               {
@@ -295,7 +290,7 @@ export default new SlashClass({
             ])
             .setColor("#2F3136")
             .setFooter({
-              text: `${member.user.tag} `,
+              text: `${member.user.username} `,
               iconURL: member.user.avatarURL({ extension: "png" }),
             })
             .setTimestamp();

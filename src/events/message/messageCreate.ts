@@ -15,7 +15,6 @@ export default new EventClass({
   async execute(client, message) {
     if (message.author.bot) return;
 
-
     const authorData = await AFK.findOne({
       afk: true,
       id: message.author.id,
@@ -83,8 +82,8 @@ export default new EventClass({
 
 
     // message commands execution code
-
       const guild = await Guild.findOne({ guildName: message.guild.name, id: message.guild.id })
+      if (!guild) return;
 
       const prefix = guild.prefix;
 
