@@ -153,21 +153,15 @@ export default new SlashClass({
       }
 
 
-      // const customBadges = []
 
-      // const roledata = [
-      //   Roles.OwnerID,
-      //   Roles.DeveloperID
-      // ]
+      //   const roles = client.guilds.cache
+      //   .flatMap((guild) => guild.roles.cache)
+      //   .filter((role) => role.id !== int.guild.id)
+      //   .map((role) => role)
 
-      //   const guild = client.guilds.cache.get(Config.server);
-
-      //   for (const roles of roledata) {
-      //     const role = guild.members.cache.get(member.id).roles.cache.get(roles);
-      //     if (role?.name === undefined) return;
-      //     customBadges.push(role?.name)
-      //   }
-        
+      //  const filtered = roles.filter((r) => r.guild.id !== int.guild.id)
+      //   console.log(filtered)
+      
       if (member) {
         if (user.bot) {
 
@@ -253,19 +247,7 @@ export default new SlashClass({
               {
                 name: "Cubed Data",
                 value: "\nidentification:" +
-                  // `${customBadges.map((i) => {
-                  //   console.log('LOG:', i)
-                  //   switch (i?.name) {
-                  //     case 'Owner': {
-                  //       return CustomBadges.Owner;
-                  //     }
-
-                  //     case 'Developer': {
-                  //       return CustomBadges.Developer
-                  //     }
-
-                  //   }
-                  // }).join(' ') ?? 'None'}` +
+                  `` +
                   "\nPrefix:" +
                   ` \`\`${prefix}\`\` will prob remove`,
               },
