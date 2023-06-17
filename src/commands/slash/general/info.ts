@@ -168,9 +168,6 @@ export default new SlashClass({
       //     customBadges.push(role?.name)
       //   }
         
-        
-
-
       if (member) {
         if (user.bot) {
 
