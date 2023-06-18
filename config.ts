@@ -29,7 +29,9 @@ export enum Emojis {
   Online = "<:Online:1054479024455434283>",
   Idle = "<:Idle:1054479022584770651>",
   Dnd = "<:Dnd:1054479021368430674>",
-  Offline = "<:Offline:1054479023897579601>"
+  Offline = "<:Offline:1054479023897579601>",
+  Profile = "<:Profile:1119811719359889428>",
+  RightArrow = "<:RightArrow:1119813135780552785>"
 }
 
 export enum Badges {
@@ -50,9 +52,4 @@ export enum Badges {
   ModeratorProgramsAlumni = "<:ModeratorProgramsAlumni:1113267721094836274>",
   Nitro = "<:Nitro:1113269160269578330>",
   VerifiedBot = " <:VerifiedBot1:1113272553503473857><:VerifiedBot2:1113272551834124338>"
-}
-
-export enum CustomBadges {
-  Owner = "<:Owner:1118733931475390617>",
-  Developer = "<:Developer:1118733929294331934>"
 }

@@ -16,6 +16,8 @@ export default new SlashClass({
     },
     // @ts-ignore
     execute: async (client, int: MessageContextMenuCommandInteraction<'cached'>) => {
+
+        // RE-VAMP THIS COMMAND TO BE BETTER AND NOT TAKE IN MENTIONS LIKE @EVERYONE AND MORE STUFF
         const message = await int.targetMessage.fetch();
         if (!message?.content) return int.reply({
             content: hyperlink('No content was found in this message!', message.url),

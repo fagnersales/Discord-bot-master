@@ -15,6 +15,7 @@ export default new EventClass({
   async execute(client, message) {
     if (message.author.bot) return;
 
+
     const authorData = await AFK.findOne({
       afk: true,
       id: message.author.id,

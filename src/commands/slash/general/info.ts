@@ -7,7 +7,7 @@ import {
 } from "discord.js";
 import { SlashClass } from "../../../structures/slash.js";
 import { Badges, Colors, Emojis } from "../../../../config.js";
-import { Guild } from "../../../database/modals/guild.js";
+// import { Guild } from "../../../database/modals/guild.js";
 
 export default new SlashClass({
   data: {
@@ -92,9 +92,9 @@ export default new SlashClass({
             case "PremiumEarlySupporter":
               badges.push(Badges.EarlySupporter);
               break;
-            // case "VerifiedBot":
-            //   badges.push(Badges.VerifiedBot);
-            //   break;
+            case "VerifiedBot":
+              badges.push(Badges.VerifiedBot);
+              break;
           }
         })
       );
@@ -153,27 +153,43 @@ export default new SlashClass({
       }
 
 
+      const devices = member?.presence?.clientStatus || {};
 
-      //   const roles = client.guilds.cache
-      //   .flatMap((guild) => guild.roles.cache)
-      //   .filter((role) => role.id !== int.guild.id)
-      //   .map((role) => role)
+      const device = () => {
+        const entries = Object.entries(devices)
+          .map((value) => {
+            if (value[0] === 'desktop') {
+              return `\n${Emojis.Blank}${value[0].charAt(0).toUpperCase() + 
+                value[0].slice(1)}: ${Emojis.Check}`
+            }
 
-      //  const filtered = roles.filter((r) => r.guild.id !== int.guild.id)
-      //   console.log(filtered)
-      
+            if (value[0] === 'mobile') {
+              return `\n${Emojis.Blank}${value[0].charAt(0).toUpperCase() + 
+                value[0].slice(1)}: ${Emojis.Check}`
+            }
+
+            if (value[0] === 'web') {
+              return `\n${Emojis.Blank}${value[0].charAt(0).toUpperCase() + 
+                value[0].slice(1)}: ${Emojis.Check}`
+            }
+          }
+          ).join(' ')
+
+        return `${entries || Emojis.Cross}`
+      }
+
+
       if (member) {
         if (user.bot) {
 
           const botEmbed = new EmbedBuilder()
             .setTitle('Bot Information')
             .setDescription(`Welcome to ${member.user.username}'s profile`)
-            .addFields([
-              {
-                name: 'not setup yet',
-                value: 'not setup yet'
-              }
-            ])
+            .addFields([{
+              name: "General",
+              value: "\nBadges:" +
+                `${badges.join(" ") || Emojis.Cross}`
+            }]);
 
 
           int.reply({ embeds: [botEmbed], ephemeral: true })
@@ -202,8 +218,8 @@ export default new SlashClass({
           };
 
 
-          const guild = await Guild.findOne({ guildName: int.guild.name, id: int.guild.id })
-          const { prefix } = guild;
+          // const guild = await Guild.findOne({ guildName: int.guild.name, id: int.guild.id })
+          // const { prefix } = guild;
 
 
           const memberEmbed = new EmbedBuilder()
@@ -214,17 +230,16 @@ export default new SlashClass({
               {
                 name: "General:",
                 value:
-                  "\nUsername:" +
-                  ` \`\`${member.user.username}\`\`` +
+                  `\n${Emojis.Profile} Profile:` +
+                  ` \`\`${member.user.username}\`\`
+                  ${Emojis.Blank} ${Emojis.RightArrow} Badges: ${badges.join(" ") || Emojis.Cross}
+                  ${Emojis.Blank} ${Emojis.RightArrow} ID: ${member.id}
+                  ${Emojis.Blank} ${Emojis.RightArrow} Status: ${mode[member.presence?.status ?? "offline"]} ${status[member.presence?.status ?? "offline"]
+                }` + 
+                  "\nJoined:" + 
+                  ` <t:${Math.floor(user.createdAt.getTime() / 1000)}:D>` +
                   "\nNickname:" +
-                  ` \`\`${member.nickname ?? "None"}\`\`` +
-                  "\nBadges:" +
-                  ` ${badges.join(" ") || " ``None``"}` +
-                  "\nID:" +
-                  ` \`\`${member.id}\`\`` +
-                  "\nStatus:" +
-                  ` ${mode[member.presence?.status ?? "offline"]} ${status[member.presence?.status ?? "offline"]
-                  }` +
+                  ` ${member.nickname ?? Emojis.Cross}` +
                   "\nStreaming:" +
                   ` ${member.presence?.activities?.filter(
                     (item) => item.name === "YouTube" || item.name === "Twitch"
@@ -242,18 +257,15 @@ export default new SlashClass({
                     : ` ${Emojis.Cross}`
                   }` +
                   "\nBot:" +
-                  ` ${bot}`,
-              },
-              {
-                name: "Cubed Data",
-                value: "\nidentification:" +
-                  `` +
-                  "\nPrefix:" +
-                  ` \`\`${prefix}\`\` will prob remove`,
+                  ` ${bot}` +
+                  "\nDevices:" +
+                  ` ${device()}` +
+                  "\nAvatar:" + 
+                  ` [png](${member.displayAvatarURL({ extension: 'png'} )}) • [jpg](${member.displayAvatarURL({ extension: 'jpg'} )})`,
               },
               {
                 name: "Roles:",
-                value: `ignore`,
+                value: `Work in Progress`,
               },
               {
                 name: "Presence:",
@@ -267,7 +279,7 @@ export default new SlashClass({
                 ),
               },
             ])
-            .setColor("#2F3136")
+            .setColor(Colors.Normal)
             .setFooter({
               text: `${member.user.username} `,
               iconURL: member.user.avatarURL({ extension: "png" }),
@@ -286,7 +298,7 @@ export default new SlashClass({
           .setFields([{
             name: "General",
             value: "\nBadges:" +
-              `${badges.join(" ") || " ``None``"}`
+              `${badges.join(" ") || " None"}`
           }]);
 
         int.reply({ embeds: [embed], ephemeral: true });
@@ -301,7 +313,7 @@ export default new SlashClass({
             "\nName:" +
             ` ${int.guild.name}` +
             "\nDescription:" +
-            ` ${int.guild.description ?? 'None'}` +
+            ` ${int.guild.description ?? Emojis.Cross}` +
             "\nOwner:" +
             ` ${int.guild.ownerId === int.member.id
               ? Emojis.Check
