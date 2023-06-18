@@ -9,8 +9,7 @@ export default new TextClass({
         ownerOnly: false,
         category: 'general'
     },
-    // @ts-ignore
-    async run(client, message, args) {
+    async run(_client, message, _args) {
         const questions = [
             "How was you're day?",
             "What's you're favorite coding language?",

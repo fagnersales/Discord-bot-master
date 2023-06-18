@@ -9,8 +9,7 @@ export default new TextClass({
         ownerOnly: false,
         category: 'admin'
     },
-    // @ts-ignore
-   async run(client, message, args) {
+   async run(_client, message, args) {
         
         const guild = await Guild.findOne({ guildName: message.guild.name, id: message.guild.id })
         if (!guild) return message.reply({ content: "Sorry a problem happened when trying to search this guild for information"})

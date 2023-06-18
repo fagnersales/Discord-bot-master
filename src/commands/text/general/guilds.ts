@@ -9,8 +9,7 @@ export default new TextClass({
         ownerOnly: false,
         category: 'general'
     },
-    // @ts-ignore
-   async run(client, message, args) {
+   async run(client, message, _args) {
         const guilds = client.guilds.cache.sort((a, b) => b.memberCount - a.memberCount).first(10);
 
         const description = guilds.map((guild, index) => {

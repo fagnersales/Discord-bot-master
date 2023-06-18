@@ -16,9 +16,7 @@ export default new TextClass({
     ownerOnly: false,
     category: "general",
   },
-  // @ts-ignore
   async run(client, message, args) {
-  
 
     if (!args[0]) {
       const emojis = {
@@ -160,7 +158,12 @@ export default new TextClass({
     Usage: ${command.data.usage}
     `);
 
-      message.reply({ embeds: [infoembed] });
+     const reply = await message.reply({ embeds: [infoembed] });
+
+      messagesCache.add({ 
+        replyMessageId: reply.id,
+        userMessageId: message.id
+       })
     }
   },
 });

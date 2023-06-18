@@ -8,8 +8,7 @@ export default new TextClass({
         ownerOnly: false,
         category: 'general'
     },
-    // @ts-ignore
-   async run(client, message, args) {
+   async run(_client, message, _args) {
         message.reply({ content: 'Ping command works!'})
     },
 })
