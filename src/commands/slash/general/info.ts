@@ -42,9 +42,7 @@ export default new SlashClass({
     visible: true,
     guildOnly: false,
   },
-  // @ts-ignore
-
-  execute: async (client, int: ChatInputCommandInteraction<'cached'>) => {
+  execute: async (_client, int: ChatInputCommandInteraction<'cached'>) => {
     const choice = int.options.getSubcommand();
     const user = int.options.getUser("user");
     const member = int.options.getMember("user");

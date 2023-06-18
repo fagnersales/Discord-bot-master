@@ -37,8 +37,7 @@ export default new SlashClass({
     visible: true,
     guildOnly: true,
   },
-  // @ts-ignore
-  execute: async (client, int: ChatInputCommandInteraction<'cached'>) => {
+  execute: async (_client, int: ChatInputCommandInteraction<'cached'>) => {
     const choice = int.options.getString("choice");
 
     switch (choice) {

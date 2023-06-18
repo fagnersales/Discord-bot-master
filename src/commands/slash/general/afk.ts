@@ -25,8 +25,7 @@ export default new SlashClass({
     visible: true,
     guildOnly: false,
   },
-  // @ts-ignore
-  execute: async (client, int: ChatInputCommandInteraction<'cached'>) => {
+  execute: async (_client, int: ChatInputCommandInteraction<'cached'>) => {
     const data = await AFK.findOne({ afk: true, id: int.user.id });
     if (data)
       return await int.reply({

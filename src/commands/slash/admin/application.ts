@@ -64,16 +64,13 @@ export default new SlashClass({
         guildOnly: true,
     },
 
-    // @ts-ignore
-    auto: async (int) => {
+
+    auto: async (_int) => {
         // const focused = int.options.getFocused() 
 
     },
-    // @ts-ignore
-    execute: async (client, int: ChatInputCommandInteraction<'cached'>) => {
-        // @ts-ignore
-        const application = int.options.getString('application');
-        // @ts-ignore
+    execute: async (_client, int: ChatInputCommandInteraction<'cached'>) => {
+        // const application = int.options.getString('application');
         const name = int.options.getString('name');
 
 
@@ -117,12 +114,10 @@ export default new SlashClass({
 
                             const channel = Menu.values[0];
 
-                            //-----------------------------------------------------
                             await Guild.findOneAndUpdate(
                                 { id: int.guild.id, guildName: int.guild.name },
                                 { $push: { applications: { name: name, channel: channel } } })
                                 .then(async (doc) => await doc.save())
-                            //-----------------------------------------------------
 
 
                             const QuestionEmbed = new EmbedBuilder()

@@ -41,8 +41,7 @@ export default new SlashClass({
     visible: true,
     guildOnly: false,
   },
-  // @ts-ignore
-  execute: async (client, int: ChatInputCommandInteraction<'cached'>) => {
+  execute: async (_client, int: ChatInputCommandInteraction<'cached'>) => {
     const user = int.options.getMember("user");
     const time = int.options.getString("time");
     const reason = int.options.getString("reason");

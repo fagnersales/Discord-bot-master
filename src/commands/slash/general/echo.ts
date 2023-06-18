@@ -14,8 +14,7 @@ export default new SlashClass({
         visible: true,
         guildOnly: false,
     },
-    // @ts-ignore
-    execute: async (client, int: MessageContextMenuCommandInteraction<'cached'>) => {
+    execute: async (_client, int: MessageContextMenuCommandInteraction<'cached'>) => {
 
         // RE-VAMP THIS COMMAND TO BE BETTER AND NOT TAKE IN MENTIONS LIKE @EVERYONE AND MORE STUFF
         const message = await int.targetMessage.fetch();
