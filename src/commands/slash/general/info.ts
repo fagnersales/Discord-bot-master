@@ -223,8 +223,7 @@ export default new SlashClass({
 
 
           const memberEmbed = new EmbedBuilder()
-            .setTitle('Member Information')
-            .setDescription(`Welcome to ${member.user.username}'s profile`)
+            .setDescription(`> ${Emojis.Information} **Member Information**`)
             .setThumbnail(member.displayAvatarURL({ extension: "png" }))
             .addFields([
               {
@@ -236,7 +235,7 @@ export default new SlashClass({
                   ${Emojis.Blank} ${Emojis.RightArrow} ID: ${member.id}
                   ${Emojis.Blank} ${Emojis.RightArrow} Status: ${mode[member.presence?.status ?? "offline"]} ${status[member.presence?.status ?? "offline"]
                 }` + 
-                  "\nJoined:" + 
+                  "\nCreated:" +
                   ` <t:${Math.floor(user.createdAt.getTime() / 1000)}:D>` +
                   "\nNickname:" +
                   ` ${member.nickname ?? Emojis.Cross}` +
@@ -286,7 +285,7 @@ export default new SlashClass({
             })
             .setTimestamp();
 
-          int.reply({ embeds: [memberEmbed], ephemeral: true });
+          int.reply({ embeds: [memberEmbed], ephemeral: false });
 
         }
 

@@ -6,6 +6,7 @@ import {
 } from "discord.js";
 import { TextClass } from "../../../structures/text.js";
 import { Guild } from "../../../database/modals/guild.js";
+import { messagesCache } from "../../../functions/messageCache.js";
 
 export default new TextClass({
   data: {
@@ -17,8 +18,7 @@ export default new TextClass({
   },
   // @ts-ignore
   async run(client, message, args) {
-    // Maybe add a feature to check if too many commands are listed on the embed and *MAYBE* make embed pages for each category
-    //------------------------------------------------------------------
+  
 
     if (!args[0]) {
       const emojis = {
@@ -87,6 +87,11 @@ export default new TextClass({
         }); // error is being logged from here in the file - PROBLEM
 
       if (!initialMessage) return;
+
+      messagesCache.add({ 
+        replyMessageId: initialMessage.id,
+        userMessageId: message.id
+       })
 
       const filter = (interaction) => interaction.isStringSelectMenu();
 

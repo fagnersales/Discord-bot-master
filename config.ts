@@ -8,7 +8,7 @@ export const Config = {
 export enum Colors {
   Error = "#FF0000",
   Success = "#008000",
-  Normal = "#0096FF",
+  Normal = "#2C2D31",
   Question = "#0096FF",
   Warning = "#FFAC1C",
   Information = "#00C599"

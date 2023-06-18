@@ -3,10 +3,8 @@ import "dotenv/config";
 import { AFK } from "../../database/modals/afk.js";
 import { EmbedBuilder } from "discord.js";
 import { Colors, Emojis } from "../../../config.js";
-// import { Guild } from "../../database/modals/guild.js";
 import { Config } from "../../../config.js";
 import { Guild } from "../../database/modals/guild.js";
-// import axios from "axios";
 
 export default new EventClass({
   name: "messageCreate",
@@ -14,7 +12,6 @@ export default new EventClass({
   // @ts-ignore
   async execute(client, message) {
     if (message.author.bot) return;
-
 
     const authorData = await AFK.findOne({
       afk: true,
@@ -103,18 +100,18 @@ export default new EventClass({
         .trim()
         .split(/ +/g);
 
-      const command = args.shift().toLowerCase();
+      const name = args.shift().toLowerCase();
 
-      const commandFile = client.text.get(command);
+      const command = client.text.get(name);
 
-      if (!commandFile) {
+      if (!command) {
         return message.reply({
           content: "This command doesn't exist",
           flags: "SuppressNotifications",
         });
       }
 
-      if (commandFile.data.ownerOnly && Config.ownerID !== message.author.id) {
+      if (command.data.ownerOnly && Config.ownerID !== message.author.id) {
         return message.reply({
           content: "Sorry, this command can only be used by the bot owner.",
           flags: "SuppressNotifications",
@@ -122,7 +119,7 @@ export default new EventClass({
       }
 
       try {
-        commandFile.run(client, message, args);
+        command.run(client, message, args)
       } catch (error) {
         console.log(error);
         return message.channel.send("Something went wrong!");
