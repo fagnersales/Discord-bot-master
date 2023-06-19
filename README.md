@@ -1,3 +1,3 @@
 # discord bot
 
-![Minion](src/photos/github/logo.png)
+![Minion](src/photos/github/cubed.png)
