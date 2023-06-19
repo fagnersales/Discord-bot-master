@@ -1,3 +1,4 @@
+import { messageCache } from "../../../functions/messageCache.js";
 import { TextClass } from "../../../structures/text.js";
 
 export default new TextClass({
@@ -9,6 +10,11 @@ export default new TextClass({
         category: 'general'
     },
    async run(_client, message, _args) {
-        message.reply({ content: 'Ping command works!'})
+      const reply = await message.reply({ content: 'Ping command works!'})
+
+      messageCache.add({
+        replyMessageId: reply.id,
+        userMessageId: message.id
+      })
     },
 })

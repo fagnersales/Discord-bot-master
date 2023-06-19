@@ -1,4 +1,5 @@
 import { Guild } from "../../../database/modals/guild.js";
+import { messageCache } from "../../../functions/messageCache.js";
 import { TextClass } from "../../../structures/text.js";
 
 export default new TextClass({
@@ -17,7 +18,12 @@ export default new TextClass({
         if (!args[0]) return message.reply({ content: "Please provide a new prefix for the bot"})
 
        await guild.updateOne({ prefix: args[0] })
-        message.reply({ content: "You're prefix has been updated!"})
+       const reply = await message.reply({ content: "You're prefix has been updated!"})
+
+       messageCache.add({
+        replyMessageId: reply.id,
+        userMessageId: message.id
+      })
 
         
     },

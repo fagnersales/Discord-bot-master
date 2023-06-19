@@ -1,5 +1,6 @@
 import { Message } from "discord.js";
 import { TextClass } from "../../../structures/text.js";
+import { messageCache } from "../../../functions/messageCache.js";
 
 export default new TextClass({
     data: {
@@ -24,6 +25,11 @@ export default new TextClass({
         const filter = (m: Message) => m.author.id === message.author.id;
 
         const appStart = await message.channel.send(questions[collectorCounter++])
+
+        messageCache.add({
+            replyMessageId: appStart.id,
+            userMessageId: message.id
+          })
 
         const collector = appStart.channel.createMessageCollector({
             filter: filter

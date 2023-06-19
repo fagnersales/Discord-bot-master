@@ -1,5 +1,6 @@
 import { EmbedBuilder } from "discord.js";
 import { TextClass } from "../../../structures/text.js";
+import { messageCache } from "../../../functions/messageCache.js";
 
 export default new TextClass({
     data: {
@@ -16,9 +17,14 @@ export default new TextClass({
             return `${index + 1}) ${guild.name} -> ${guild.memberCount} members`
         }).join('\n')
 
-        message.reply({ embeds: [new EmbedBuilder()
+      const reply = await message.reply({ embeds: [new EmbedBuilder()
             .setTitle('Top Guilds')
             .setDescription(description)
         ]})
+
+        messageCache.add({
+            replyMessageId: reply.id,
+            userMessageId: message.id
+          })
     },
 })

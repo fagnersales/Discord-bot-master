@@ -1,3 +1,4 @@
+import { messageCache } from "../../../functions/messageCache.js";
 import { TextClass } from "../../../structures/text.js";
 
 export default new TextClass({
@@ -9,6 +10,11 @@ export default new TextClass({
         category: 'fun'
     },
    async run(_client, message, _args) {
-        message.reply({ content: 'Meme command works!'})
+      const reply = await message.reply({ content: 'Meme command works!'})
+
+      messageCache.add({
+        replyMessageId: reply.id,
+        userMessageId: message.id
+      })
     },
 })
