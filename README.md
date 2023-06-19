@@ -1,0 +1,1 @@
+![Minion](src/photos/github/logo.png)
