@@ -1,1 +1,0 @@
-Make it so when using text command if the command message was deleted it deletes command response

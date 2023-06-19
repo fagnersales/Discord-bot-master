@@ -3,4 +3,4 @@ type MessageCache = {
     replyMessageId: string
   }
   
-  export const messagesCache = new Set<MessageCache>()
+  export const messageCache = new Set<MessageCache>()

@@ -6,7 +6,7 @@ import {
 } from "discord.js";
 import { TextClass } from "../../../structures/text.js";
 import { Guild } from "../../../database/modals/guild.js";
-import { messagesCache } from "../../../functions/messageCache.js";
+import { messageCache } from "../../../functions/messageCache.js";
 
 export default new TextClass({
   data: {
@@ -54,7 +54,7 @@ export default new TextClass({
 
       const embed = new EmbedBuilder().setDescription(
         "Please choose a category in the select menu"
-      ).setFooter({ text: `Use ${prefix}help {cmd} to search for only one`})
+      ).setFooter({ text: `Use ${prefix}help {cmd} to search for only one` })
 
       const components = (state: boolean) => [
         new ActionRowBuilder<StringSelectMenuBuilder>().addComponents([
@@ -86,10 +86,10 @@ export default new TextClass({
 
       if (!initialMessage) return;
 
-      messagesCache.add({ 
+      messageCache.add({
         replyMessageId: initialMessage.id,
         userMessageId: message.id
-       })
+      })
 
       const filter = (interaction) => interaction.isStringSelectMenu();
 
@@ -138,7 +138,7 @@ export default new TextClass({
           initialMessage.edit({ components: components(true) }).then((msg) => {
             setTimeout(async () => {
               if (msg.deletable) {
-                await msg.delete().catch(() => {});
+                await msg.delete().catch(() => { });
               }
             }, 7000);
           });
@@ -158,12 +158,12 @@ export default new TextClass({
     Usage: ${command.data.usage}
     `);
 
-     const reply = await message.reply({ embeds: [infoembed] });
+      const reply = await message.reply({ embeds: [infoembed] });
 
-      messagesCache.add({ 
+      messageCache.add({
         replyMessageId: reply.id,
         userMessageId: message.id
-       })
+      })
     }
   },
 });
