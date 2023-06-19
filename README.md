@@ -1,1 +1,1 @@
-# Discord-bot-master
+![Minion](https://octodex.github.com/images/minion.png)
