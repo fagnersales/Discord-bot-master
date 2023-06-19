@@ -1,3 +1,3 @@
-# discord bot
+# Cubed
 
-![Minion](src/photos/github/cubed.png)
+->![Cubed](src/photos/github/cubed.png)<-
