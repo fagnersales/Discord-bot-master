@@ -1,6 +1,7 @@
 import { EmbedBuilder, codeBlock } from "discord.js";
 import { TextClass } from "../../../structures/text.js";
 import { inspect } from "util";
+import { messageCache } from "../../../functions/messageCache.js";
 
 export default new TextClass({
   data: {
@@ -20,6 +21,12 @@ export default new TextClass({
 
     const embed = new EmbedBuilder().setTitle("Evaluating...");
     const msg = await message.reply({ embeds: [embed] });
+
+    messageCache.add({
+      replyMessageId: msg.id,
+      userMessageId: message.id
+    })
+
     try {
       const data = await eval(args.join(" ").replace(/```/g, ""));
       let output = data;

@@ -60,7 +60,6 @@ export default new SlashClass({
         botPermissions: ['ManageGuild'], // check over what permissions should be needed later
         category: "admin",
         cooldown: 3,
-        visible: true,
         guildOnly: true,
     },
 

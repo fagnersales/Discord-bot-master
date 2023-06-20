@@ -118,7 +118,7 @@ export default new EventClass({
 
                 return interaction.reply({
                   content: `Please wait ${bold(
-                    `${timeLeft.toFixed()} second(s)`
+                    `${timeLeft.toFixed()} seconds`
                   )} before reusing this command!`,
                   ephemeral: true,
                 });

@@ -1,6 +1,6 @@
 import { Schema, model } from "mongoose";
 
-export interface IAFKMember {
+export interface AfkData {
   guild: string;
   id: string;
   afk: boolean
@@ -9,7 +9,7 @@ export interface IAFKMember {
   time: string;
 }
 
-export const AFK = model("AFK", new Schema<IAFKMember>({
+export const AFK = model("Afk", new Schema<AfkData>({
     guild: String,
     id: String,
     afk: Boolean,

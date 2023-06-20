@@ -11,7 +11,6 @@ export default new SlashClass({
         botPermissions: ['SendMessages'],
         category: 'Context',
         cooldown: 5,
-        visible: true,
         guildOnly: false,
     },
     execute: async (_client, int: MessageContextMenuCommandInteraction<'cached'>) => {

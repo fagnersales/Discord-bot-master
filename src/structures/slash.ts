@@ -7,7 +7,6 @@ interface CustomOptions {
     category?: string;
     cooldown?: number;
     ownerOnly?: boolean;
-    visible?: boolean;
     guildOnly?: boolean;
 };
 

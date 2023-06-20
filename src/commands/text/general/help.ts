@@ -140,7 +140,7 @@ export default new TextClass({
               if (msg.deletable) {
                 await msg.delete().catch(() => { });
               }
-            }, 7000);
+            }, 10000);
           });
         }
       });

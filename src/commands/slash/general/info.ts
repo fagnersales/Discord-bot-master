@@ -39,7 +39,6 @@ export default new SlashClass({
     botPermissions: ["SendMessages"],
     category: "General",
     cooldown: 5,
-    visible: true,
     guildOnly: false,
   },
   execute: async (_client, int: ChatInputCommandInteraction<'cached'>) => {

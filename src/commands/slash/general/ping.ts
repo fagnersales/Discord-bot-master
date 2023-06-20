@@ -13,7 +13,6 @@ export default new SlashClass({
         category: 'General',
         cooldown: 5,
         ownerOnly: false,
-        visible: true,
         guildOnly: false,
     },
     execute: async (_client, int: ChatInputCommandInteraction<'cached'>) => {
