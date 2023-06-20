@@ -31,7 +31,8 @@ export enum Emojis {
   Dnd = "<:Dnd:1054479021368430674>",
   Offline = "<:Offline:1054479023897579601>",
   Profile = "<:Profile:1119811719359889428>",
-  RightArrow = "<:RightArrow:1119813135780552785>"
+  RightArrow = "<:RightArrow:1119813135780552785>",
+  Poll = "<:Pin:1120772864585515068>"
 }
 
 export enum Badges {
