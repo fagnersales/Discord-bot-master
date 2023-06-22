@@ -89,9 +89,6 @@ export default new SlashClass({
             case "PremiumEarlySupporter":
               badges.push(Badges.EarlySupporter);
               break;
-            case "VerifiedBot":
-              badges.push(Badges.VerifiedBot);
-              break;
           }
         })
       );
@@ -185,7 +182,9 @@ export default new SlashClass({
             .addFields([{
               name: "General",
               value: "\nBadges:" +
-                `${badges.join(" ") || Emojis.Cross}`
+                ` ${badges.join(" ") || Emojis.Cross}` + 
+                "\nVerified:" + 
+                ` ${user.flags.has('VerifiedBot') ? `${Badges.VerifiedBot}` : `${Emojis.Cross}`}`
             }]);
 
 
