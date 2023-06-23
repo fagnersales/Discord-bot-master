@@ -1,14 +1,15 @@
 import {
   ActivityType,
+  // ActivityType,
   ApplicationCommandOptionType,
   ChatInputCommandInteraction,
   EmbedBuilder,
   codeBlock,
+  // codeBlock,
 } from "discord.js";
 import { SlashClass } from "../../../structures/slash.js";
 import { Badges, Colors, Emojis } from "../../../../config.js";
 // import { Guild } from "../../../database/modals/guild.js";
-
 export default new SlashClass({
   data: {
     name: "info",
@@ -46,10 +47,10 @@ export default new SlashClass({
     const user = int.options.getUser("user");
     const member = int.options.getMember("user");
 
+
     if (choice === "user") {
       let flags = user.flags.toArray();
       let badges = [];
-
       await Promise.all(
         flags.map((badge) => {
           switch (badge) {
@@ -93,51 +94,47 @@ export default new SlashClass({
         })
       );
 
+      try {
       const userData = await fetch(
         `https://japi.rest/discord/v1/user/${user.id}`
       );
-      const { data } = await userData.json();
+      const { data } = await userData?.json();
 
-      if (data.public_flags_array) {
+      if (data?.public_flags_array) {
         await Promise.all(
-          data.public_flags_array.map(async (badge: String) => {
+          data?.public_flags_array.map(async (badge: String) => {
             if (badge === "NITRO") badges.push(Badges.Nitro);
           })
         );
       }
 
+    } catch (err) {
+      console.log('japi api went down when trying to check this user')
+    }
       if (user.bot) {
         const botFetch = await fetch(
           `https://discord.com/api/v10/applications/${user.id}/rpc`
         );
-
         const json = await botFetch.json();
-
         const flagsBot = json.flags;
-
         const gateways = {
           APPLICATION_COMMAND_BADGE: 1 << 23,
           APPLICATION_AUTO_MODERATION_RULE_CREATE_BADGE: 1 << 6,
         };
-
         const arrayFlags = [];
-
         for (let i in gateways) {
           const bit = gateways[i];
           if ((flagsBot & bit) === bit) arrayFlags.push(i);
         }
-
         if (arrayFlags.includes("APPLICATION_COMMAND_BADGE")) {
           badges.push(Badges.SupportsCommands);
         }
-
         if (
           arrayFlags.includes("APPLICATION_AUTO_MODERATION_RULE_CREATE_BADGE")
         ) {
           badges.push(Badges.Automod);
         }
       }
-
       if (
         !user.discriminator ||
         user.discriminator === "0" ||
@@ -145,10 +142,7 @@ export default new SlashClass({
       ) {
         badges.push(Badges.Username);
       }
-
-
       const devices = member?.presence?.clientStatus || {};
-
       const device = () => {
         const entries = Object.entries(devices)
           .map((value) => {
@@ -156,26 +150,20 @@ export default new SlashClass({
               return `\n${Emojis.Blank}${value[0].charAt(0).toUpperCase() + 
                 value[0].slice(1)}: ${Emojis.Check}`
             }
-
             if (value[0] === 'mobile') {
               return `\n${Emojis.Blank}${value[0].charAt(0).toUpperCase() + 
                 value[0].slice(1)}: ${Emojis.Check}`
             }
-
             if (value[0] === 'web') {
               return `\n${Emojis.Blank}${value[0].charAt(0).toUpperCase() + 
                 value[0].slice(1)}: ${Emojis.Check}`
             }
           }
           ).join(' ')
-
         return `${entries || Emojis.Cross}`
-      }
-
-
+     }
       if (member) {
         if (user.bot) {
-
           const botEmbed = new EmbedBuilder()
             .setTitle('Bot Information')
             .setDescription(`Welcome to ${member.user.username}'s profile`)
@@ -189,23 +177,19 @@ export default new SlashClass({
 
 
           int.reply({ embeds: [botEmbed], ephemeral: true })
-
-        } else {
-
+        }
           let bot: Boolean | String;
           if (member.user.bot) {
             bot = Emojis.Check;
           } else {
             bot = Emojis.Cross;
           }
-
           let status = {
             online: "Online",
             idle: "Idle",
             dnd: "Do Not Disturb",
             offline: "Invisible",
           };
-
           let mode = {
             online: Emojis.Online,
             idle: Emojis.Idle,
@@ -213,12 +197,8 @@ export default new SlashClass({
             offline: Emojis.Offline,
           };
 
-
-          // const guild = await Guild.findOne({ guildName: int.guild.name, id: int.guild.id })
-          // const { prefix } = guild;
-
-
           const memberEmbed = new EmbedBuilder()
+              .setTitle('testing')
             .setDescription(`> ${Emojis.Information} **Member Information**`)
             .setThumbnail(member.displayAvatarURL({ extension: "png" }))
             .addFields([
@@ -280,11 +260,8 @@ export default new SlashClass({
               iconURL: member.user.avatarURL({ extension: "png" }),
             })
             .setTimestamp();
-
           int.reply({ embeds: [memberEmbed], ephemeral: false });
-
-        }
-
+        
       } else {
         // if user isn't a guild member and just a USER
         const embed = new EmbedBuilder()
@@ -295,11 +272,9 @@ export default new SlashClass({
             value: "\nBadges:" +
               `${badges.join(" ") || " None"}`
           }]);
-
         int.reply({ embeds: [embed], ephemeral: true });
       }
     }
-
     if (choice === "guild") {
       const embed = new EmbedBuilder().setTitle("Guild information").setFields([
         {
@@ -341,7 +316,6 @@ export default new SlashClass({
           value: "nothing yet"
         }
       ]).setColor(Colors.Information)
-
       await int.reply({ embeds: [embed] });
     }
   },
